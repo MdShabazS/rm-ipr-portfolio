@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MineGuard — E-Portfolio | Project Phase 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+:root {
+  --navy:    #0d1b2a;
+  --navy2:   #162032;
+  --navy3:   #1e2d40;
+  --gold:    #c8962a;
+  --gold-lt: #e8b84b;
+  --gold-bg: rgba(200,150,42,0.08);
+  --teal:    #1a7f74;
+  --teal-lt: #22a699;
+  --teal-bg: rgba(26,127,116,0.08);
+  --red:     #b83232;
+  --text:    #e8edf3;
+  --muted:   #7a90a8;
+  --border:  rgba(255,255,255,0.08);
+  --card:    rgba(22,32,50,0.7);
+  --surface: #162032;
+}
+
+body {
+  background: var(--navy);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── SCROLL PROGRESS ── */
+#prog { position: fixed; top: 0; left: 0; height: 2px; z-index: 999; background: linear-gradient(90deg, var(--gold), var(--teal-lt)); width: 0%; }
+
+/* ── SIDEBAR NAV ── */
+.sidebar {
+  position: fixed; left: 0; top: 0; bottom: 0; width: 240px;
+  background: var(--navy2);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; z-index: 100;
+  padding: 32px 0;
+}
+.sidebar-logo {
+  padding: 0 28px 32px;
+  border-bottom: 1px solid var(--border);
+}
+.logo-mark {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.35rem; font-weight: 800;
+  color: var(--gold-lt); letter-spacing: -0.01em;
+  display: block;
+}
+.logo-sub {
+  font-size: 0.68rem; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.12em;
+  margin-top: 4px; display: block;
+}
+.nav-menu { padding: 20px 0; flex: 1; overflow-y: auto; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 9px 28px;
+  color: var(--muted); text-decoration: none;
+  font-size: 0.8rem; font-weight: 500;
+  letter-spacing: 0.01em;
+  transition: color 0.2s, background 0.2s;
+  border-left: 2px solid transparent;
+}
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-item.active { color: var(--gold-lt); border-left-color: var(--gold); background: var(--gold-bg); }
+.nav-num {
+  font-size: 0.65rem; color: var(--muted); font-weight: 600;
+  min-width: 18px;
+}
+.sidebar-footer {
+  padding: 20px 28px 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.7rem; color: var(--muted); line-height: 1.6;
+}
+.sidebar-footer strong { color: var(--text); display: block; margin-bottom: 2px; }
+
+/* ── MAIN CONTENT ── */
+.main { margin-left: 240px; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh; position: relative; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 80px 72px;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, #0d1b2a 0%, #0b1520 50%, #05100f 100%);
+}
+.hero-pattern {
+  position: absolute; inset: 0; opacity: 0.06;
+  background-image: repeating-linear-gradient(
+    0deg, transparent, transparent 47px, rgba(255,255,255,0.4) 47px, rgba(255,255,255,0.4) 48px),
+    repeating-linear-gradient(
+    90deg, transparent, transparent 47px, rgba(255,255,255,0.4) 47px, rgba(255,255,255,0.4) 48px);
+}
+.hero-accent {
+  position: absolute; right: -80px; top: 80px;
+  width: 560px; height: 560px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,150,42,0.1) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-accent2 {
+  position: absolute; left: -60px; bottom: -60px;
+  width: 380px; height: 380px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,127,116,0.1) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-content { position: relative; z-index: 1; max-width: 760px; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--gold); margin-bottom: 24px;
+}
+.hero-eyebrow::before {
+  content: ''; width: 28px; height: 1px; background: var(--gold);
+}
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 6vw, 5.6rem);
+  font-weight: 800; line-height: 1.03;
+  letter-spacing: -0.02em; margin-bottom: 8px;
+}
+.hero-title em { color: var(--gold-lt); font-style: normal; }
+.hero-subtitle {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.3rem, 2.5vw, 2rem);
+  font-weight: 700; color: var(--teal-lt);
+  margin-bottom: 32px; line-height: 1.2;
+}
+.hero-desc {
+  font-size: 1rem; color: var(--muted); max-width: 580px;
+  line-height: 1.8; margin-bottom: 48px; font-weight: 300;
+}
+.hero-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  padding: 7px 14px; border-radius: 6px;
+  font-size: 0.75rem; color: var(--muted);
+  line-height: 1.4;
+}
+.chip b { color: var(--text); font-weight: 500; }
+
+/* ── TEAM SECTION ── */
+.team-strip {
+  background: var(--navy2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 40px 72px;
+}
+.strip-label {
+  font-size: 0.68rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--teal-lt); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.strip-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.team-card {
+  background: var(--navy3);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px;
+  display: flex; align-items: center; gap: 14px;
+  transition: border-color 0.2s;
+}
+.team-card:hover { border-color: rgba(200,150,42,0.3); }
+.team-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--gold-bg);
+  border: 1px solid rgba(200,150,42,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; font-weight: 600; color: var(--gold-lt);
+  flex-shrink: 0;
+}
+.team-name { font-size: 0.85rem; font-weight: 500; }
+.team-usn { font-size: 0.72rem; color: var(--muted); margin-top: 2px; font-family: 'Inter', monospace; }
+
+/* ── SECTIONS ── */
+.section {
+  padding: 80px 72px;
+  border-top: 1px solid var(--border);
+}
+.section-header { margin-bottom: 40px; }
+.section-eyebrow {
+  font-size: 0.68rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--teal-lt); margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-eyebrow::after { content: ''; width: 40px; height: 1px; background: var(--teal); }
+h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 700; line-height: 1.15;
+}
+h3 {
+  font-size: 0.88rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--gold); margin-bottom: 14px;
+}
+p { margin-bottom: 14px; font-weight: 300; font-size: 0.95rem; }
+p:last-child { margin-bottom: 0; }
+
+/* ── PROSE CARD ── */
+.pcard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 28px 32px;
+  margin-bottom: 16px;
+  backdrop-filter: blur(8px);
+}
+.pcard:last-of-type { margin-bottom: 0; }
+
+/* ── REFLECTION ── */
+.reflection {
+  border: 1px solid rgba(26,127,116,0.25);
+  border-left: 3px solid var(--teal-lt);
+  background: var(--teal-bg);
+  border-radius: 0 10px 10px 0;
+  padding: 24px 28px; margin-top: 28px;
+}
+.ref-header {
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--teal-lt);
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.ref-header::before { content: '◆'; font-size: 0.5rem; }
+.reflection p { color: #90acbf; font-style: italic; font-size: 0.9rem; }
+
+/* ── OBJECTIVES ── */
+.obj-grid { display: flex; flex-direction: column; gap: 12px; }
+.obj-item {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 20px 24px;
+  display: grid; grid-template-columns: 52px 1fr; gap: 16px;
+  align-items: start; transition: border-color 0.2s;
+}
+.obj-item:hover { border-color: rgba(200,150,42,0.3); }
+.obj-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem; font-weight: 800;
+  color: rgba(200,150,42,0.25); line-height: 1; padding-top: 2px;
+}
+.obj-text { font-size: 0.92rem; font-weight: 300; line-height: 1.7; padding-top: 6px; }
+
+/* ── LIT SURVEY TABLE ── */
+.table-wrap {
+  border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; overflow-x: auto;
+}
+table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+thead tr { background: var(--navy3); }
+th {
+  padding: 13px 16px; text-align: left;
+  font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--gold); border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+td {
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  color: #a0b8cc; vertical-align: top; line-height: 1.55;
+}
+tr:last-child td { border-bottom: none; }
+tbody tr { background: var(--card); transition: background 0.15s; }
+tbody tr:hover { background: var(--navy3); }
+
+/* ── GAP GRID ── */
+.gap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.gap-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 22px 24px;
+}
+.gap-num {
+  font-size: 0.65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--red); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.gap-num::before {
+  content: ''; width: 18px; height: 2px; background: var(--red);
+}
+.gap-card p { font-size: 0.87rem; color: #8ea8bc; margin: 0; line-height: 1.65; }
+
+/* ── SOLUTION BLOCK DIAGRAM ── */
+.blockdiagram {
+  background: var(--navy3); border: 1px solid var(--border);
+  border-radius: 12px; padding: 32px 24px; margin-top: 16px;
+  overflow-x: auto;
+}
+.flow {
+  display: flex; align-items: center; justify-content: center;
+  flex-wrap: wrap; gap: 6px; min-width: 600px;
+}
+.flow-box {
+  background: var(--navy2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 16px;
+  text-align: center; min-width: 110px;
+  font-size: 0.75rem; line-height: 1.45;
+}
+.flow-box.gold { border-color: rgba(200,150,42,0.4); background: var(--gold-bg); }
+.flow-box.teal { border-color: rgba(26,127,116,0.4); background: var(--teal-bg); }
+.flow-box.red  { border-color: rgba(184,50,50,0.3); background: rgba(184,50,50,0.06); }
+.flow-box strong { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 3px; }
+.flow-box.gold strong { color: var(--gold-lt); }
+.flow-box.teal strong { color: var(--teal-lt); }
+.flow-box.red  strong { color: #e06060; }
+.flow-box small { color: var(--muted); font-size: 0.7rem; }
+.arrow { color: var(--muted); font-size: 1.1rem; flex-shrink: 0; }
+
+/* ── METHODOLOGY TIMELINE ── */
+.timeline { position: relative; padding-left: 44px; }
+.timeline::before {
+  content: ''; position: absolute; left: 15px; top: 8px; bottom: 8px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--gold), var(--teal));
+}
+.tl-item { position: relative; margin-bottom: 28px; }
+.tl-item:last-child { margin-bottom: 0; }
+.tl-dot {
+  position: absolute; left: -44px; top: 2px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--navy2); border: 2px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 0.85rem; font-weight: 700; color: var(--gold);
+  z-index: 1;
+}
+.tl-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 5px; }
+.tl-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+/* ── TOOLS GRID ── */
+.tools-section { display: flex; flex-direction: column; gap: 16px; }
+.tools-category {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 22px 24px;
+}
+.tools-cat-label {
+  font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--muted); margin-bottom: 14px;
+}
+.tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag {
+  background: var(--navy3); border: 1px solid var(--border);
+  color: var(--text); padding: 6px 14px; border-radius: 6px;
+  font-size: 0.78rem; font-weight: 400;
+}
+.tag.gold { color: var(--gold-lt); border-color: rgba(200,150,42,0.25); background: var(--gold-bg); }
+.tag.teal { color: var(--teal-lt); border-color: rgba(26,127,116,0.25); background: var(--teal-bg); }
+
+/* ── PROGRESS CHECKLIST ── */
+.checklist { display: flex; flex-direction: column; gap: 10px; }
+.check-item {
+  display: flex; align-items: center; gap: 14px;
+  font-size: 0.9rem; font-weight: 300;
+}
+.check-icon {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 700;
+}
+.check-icon.done { background: var(--teal-bg); color: var(--teal-lt); border: 1px solid rgba(26,127,116,0.3); }
+.check-icon.pending { background: var(--navy3); color: var(--muted); border: 1px solid var(--border); }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  background: var(--navy2);
+  padding: 32px 72px;
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px;
+}
+.footer-left { font-size: 0.8rem; color: var(--muted); }
+.footer-left strong { color: var(--text); font-weight: 500; }
+.footer-right { font-size: 0.75rem; color: var(--muted); }
+
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; }
+  .hero, .team-strip, .section, footer { padding-left: 24px; padding-right: 24px; }
+  .team-grid { grid-template-columns: 1fr 1fr; }
+  .gap-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <span class="logo-mark">MineGuard</span>
+    <span class="logo-sub">E-Portfolio · Phase 1</span>
+  </div>
+  <nav class="nav-menu">
+    <a class="nav-item active" href="#home"><span class="nav-num">00</span>Overview</a>
+    <a class="nav-item" href="#problem"><span class="nav-num">01</span>Problem Statement</a>
+    <a class="nav-item" href="#objectives"><span class="nav-num">02</span>Objectives</a>
+    <a class="nav-item" href="#literature"><span class="nav-num">03</span>Literature Survey</a>
+    <a class="nav-item" href="#gap"><span class="nav-num">04</span>Research Gap</a>
+    <a class="nav-item" href="#solution"><span class="nav-num">05</span>Proposed Solution</a>
+    <a class="nav-item" href="#methodology"><span class="nav-num">06</span>Methodology</a>
+    <a class="nav-item" href="#tools"><span class="nav-num">07</span>Tools & Technologies</a>
+    <a class="nav-item" href="#reflection"><span class="nav-num">08</span>Overall Reflection</a>
+  </nav>
+  <div class="sidebar-footer">
+    <strong>Dept. of ECE</strong>
+    BITM Ballari<br/>
+    Autonomous · VTU<br/>
+    Academic Year 2025–26
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<main class="main">
+
+  <!-- HERO -->
+  <section id="home" style="padding:0; border:none;">
+    <div class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-pattern"></div>
+      <div class="hero-accent"></div>
+      <div class="hero-accent2"></div>
+      <div class="hero-content">
+        <div class="hero-eyebrow">Project Phase 1 — Review 1</div>
+        <h1 class="hero-title">Mine<em>Guard</em></h1>
+        <div class="hero-subtitle">Autonomous Aerial Landmine Detection System</div>
+        <p class="hero-desc">
+          A drone-based detection platform that fuses metal detection and thermal imaging to locate, geo-tag, and map subsurface landmines — autonomously, at a safe distance, without placing any human at risk.
+        </p>
+        <div class="hero-chips">
+          <div class="chip"><b>Branch</b> Electronics &amp; Communication Engineering</div>
+          <div class="chip"><b>Institution</b> BITM Ballari (Autonomous, VTU)</div>
+          <div class="chip"><b>Guide</b> Dr. Naseeruddin, Asst. HOD · ECE</div>
+          <div class="chip"><b>Coordinator</b> Dr. Naseeruddin</div>
+          <div class="chip"><b>HOD</b> Dr. Sadyojatha K.M, Professor &amp; HOD · ECE</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="team-strip">
+      <div class="strip-label">Team Members</div>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar">AR</div>
+          <div><div class="team-name">A Mohammed Rahil</div><div class="team-usn">3BR23EC001</div></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">MI</div>
+          <div><div class="team-name">B I Mohammed Iqlas</div><div class="team-usn">3BR23EC015</div></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">DN</div>
+          <div><div class="team-name">Danish</div><div class="team-usn">3BR23EC038</div></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">GV</div>
+          <div><div class="team-name">G Sree Vidya</div><div class="team-usn">3BR23EC045</div></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">MS</div>
+          <div><div class="team-name">Mohammed Shabaz S</div><div class="team-usn">3BR23EC102</div></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">ST</div>
+          <div><div class="team-name">Shaistha Tabasum</div><div class="team-usn">3BR23EC149</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM STATEMENT -->
+  <section id="problem" class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">01 · Problem Statement</div>
+      <h2>The Hidden Threat Beneath Our Feet</h2>
+    </div>
+    <div class="pcard">
+      <h3>General Description</h3>
+      <p>Landmines buried in post-conflict zones continue to threaten civilian lives and render vast tracts of land unusable for agriculture, infrastructure, and resettlement — often decades after conflicts end. With an estimated 110 million active landmines spread across 60+ countries, the scale of the problem demands a smarter, safer response.</p>
+      <p>Current methods depend on trained deminers physically traversing suspect areas with handheld detectors — a process that is slow, expensive, and profoundly dangerous. Existing semi-automated systems still require operators near hazardous zones, offering only marginal safety improvement.</p>
+    </div>
+    <div class="pcard">
+      <h3>Importance &amp; Context</h3>
+      <p>The humanitarian and economic consequences are severe: lost lives, amputations, widespread trauma, and land that cannot be farmed or inhabited. There is a critical need for a solution that is technically sound and practically deployable in resource-constrained environments. An autonomous aerial system directly addresses the core problem: the need for humans to be physically present in danger zones.</p>
+    </div>
+    <div class="reflection">
+      <div class="ref-header">Team Reflection</div>
+      <p>What sparked our interest was the persistent reality that landmine casualties are not historical — they are ongoing. We initially framed the problem narrowly as a hardware challenge. Inputs from our Guide broadened this: the real bottleneck is not sensor capability alone, but safe autonomous deployment and reliable data fusion. The PRC review pushed us further, raising practical deployment constraints — terrain variation, battery endurance, and the cost of false negatives — which significantly deepened how we defined the problem.</p>
+    </div>
+  </section>
+
+  <!-- OBJECTIVES -->
+  <section id="objectives" class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">02 · Objectives</div>
+      <h2>What We Set Out to Achieve</h2>
+    </div>
+    <div class="obj-grid">
+      <div class="obj-item">
+        <div class="obj-num">01</div>
+        <div class="obj-text">Design and develop an autonomous drone system that scans suspected landmine fields by following a pre-programmed flight path without any manual intervention during operation.</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-num">02</div>
+        <div class="obj-text">Detect subsurface landmines accurately by integrating a metal detector coil and thermal camera with a sensor fusion algorithm that minimises false detections.</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-num">03</div>
+        <div class="obj-text">Geo-tag and map every detected threat using a GPS module and display real-time detection data on a ground control station dashboard accessible from a safe distance.</div>
+      </div>
+      <div class="obj-item">
+        <div class="obj-num">04</div>
+        <div class="obj-text">Eliminate human exposure during landmine survey operations by replacing dangerous manual ground sweeping with a fully autonomous aerial detection system.</div>
+      </div>
+    </div>
+    <div class="reflection">
+      <div class="ref-header">Team Reflection</div>
+      <p>Our initial objectives were broad and aspirational — effectively "build a drone that finds mines." The PRC sessions pushed us to make objectives measurable and bounded: specifying what "accurate" means (sensor fusion with defined false-positive thresholds) and what "safe distance" entails operationally. Our Guide helped us recognise that the geo-tagging and real-time dashboard objective was critical: detection without actionable, mapped data has limited field utility.</p>
+    </div>
+  </section>
+
+  <!-- LITERATURE SURVEY -->
+  <section id="literature" class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">03 · Literature Survey</div>
+      <h2>What Research Already Tells Us</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Authors</th>
+            <th>Year</th>
+            <th>Methodology</th>
+            <th>Key Limitation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>UAV-based Landmine Detection using Thermal Imaging</td>
+            <td>J. Smith et al.</td>
+            <td>2021</td>
+            <td>Thermal cameras on drones detecting buried mine temperature anomalies</td>
+            <td>Low accuracy for deep-buried mines; sensitive to weather variation</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Metal Detection System for Buried Object Detection</td>
+            <td>R. Kumar et al.</td>
+            <td>2020</td>
+            <td>Pulse induction metal detector for metallic mine detection</td>
+            <td>Cannot detect non-metallic (plastic) mines</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>Drone-based GPR for Mine Detection</td>
+            <td>A. Lee et al.</td>
+            <td>2022</td>
+            <td>Ground Penetrating Radar integrated with UAV for subsurface scanning</td>
+            <td>High cost; complex real-time data processing</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>Multi-Sensor Fusion for Landmine Detection</td>
+            <td>S. Patel et al.</td>
+            <td>2019</td>
+            <td>Combined metal detector, thermal sensor, and image processing</td>
+            <td>Increased system complexity and power consumption</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>AI-based Object Classification in UAV Detection Systems</td>
+            <td>K. Reddy et al.</td>
+            <td>2023</td>
+            <td>CNN model to classify mine vs. debris in drone-captured data</td>
+            <td>Requires large labelled dataset and high onboard processing power</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td>Autonomous Drone Navigation for Area Scanning</td>
+            <td>M. Singh et al.</td>
+            <td>2021</td>
+            <td>Waypoint-based grid navigation using GPS</td>
+            <td>Coverage accuracy depends on GPS precision and environmental factors</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="reflection">
+      <div class="ref-header">Team Reflection</div>
+      <p>Reviewing existing literature revealed the core trade-off landscape: single-sensor approaches are cheaper and simpler but unreliable; multi-sensor fusion improves accuracy but introduces complexity and power constraints. The 2023 CNN paper was particularly notable — it demonstrated AI classification potential while exposing data scarcity as a real barrier in niche domains. The key pattern across all six papers: no single work had achieved full autonomy with real-time geo-mapping at low cost. That absence pointed us toward our own direction.</p>
+    </div>
+  </section>
+
+  <!-- RESEARCH GAP -->
+  <section id="gap" class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">04 · Research Gap</div>
+      <h2>Where Current Work Falls Short</h2>
+    </div>
+    <div class="gap-grid">
+      <div class="gap-card">
+        <div class="gap-num">Gap 01</div>
+        <p>No existing low-cost system combines metal detection and thermal sensing with full autonomous aerial navigation and real-time geo-mapping in a single integrated platform.</p>
+      </div>
+      <div class="gap-card">
+        <div class="gap-num">Gap 02</div>
+        <p>Current multi-sensor systems lack fusion logic specifically tuned to reduce false positives in varied terrain conditions without requiring high computational resources.</p>
+      </div>
+      <div class="gap-card">
+        <div class="gap-num">Gap 03</div>
+        <p>Most UAV-based detection research is conducted in controlled environments; practical deployment constraints such as battery endurance during area scanning missions are under-studied.</p>
+      </div>
+      <div class="gap-card">
+        <div class="gap-num">Gap 04</div>
+        <p>Existing systems do not provide an operator-accessible ground control dashboard aggregating GPS-tagged detection events in real time, limiting their field operational utility.</p>
+      </div>
+    </div>
+    <div class="reflection">
+      <div class="ref-header">Team Reflection</div>
+      <p>Distinguishing between a "gap" and a "limitation" required careful thought. A limitation is a known constraint of an existing approach — thermal imaging struggling with deep mines. A gap is an unaddressed opportunity that no current work has adequately resolved. Limitations are the ceiling of existing methods; gaps are the floor of what remains to be built. Our Guide helped us understand that identifying a gap only holds value if our proposed work meaningfully addresses it — which forced us to connect each gap directly to a specific design decision in MineGuard.</p>
+    </div>
+  </section>
+
+  <!-- PROPOSED SOLUTION -->
+  <section id="solution" class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">05 · Proposed Solution</div>
+      <h2>MineGuard: A Conceptual Framework</h2>
+    </div>
+    <div class="pcard">
+      <h3>High-Level Concept</h3>
+      <p>MineGuard is an autonomous aerial detection platform. A drone equipped with a dual-sensor payload follows a pre-programmed grid flight path over a suspect area. Onboard, signals from both sensors are cross-validated. When a threat signature is confirmed, the system records the GPS coordinates and transmits a real-time alert to a ground control station — with no human required to enter the area.</p>
+      <p>The system operates across three functional layers: <strong>Navigate</strong> (autonomous GPS-guided area coverage), <strong>Detect</strong> (multi-sensor data acquisition and fusion), and <strong>Report</strong> (geo-tagging, threat mapping, and GCS transmission).</p>
+    </div>
+    <div class="blockdiagram">
+      <div class="flow">
+        <div class="flow-box gold"><strong>Flight Path</strong><small>Pre-programmed grid</small></div>
+        <div class="arrow">→</div>
+        <div class="flow-box teal"><strong>Drone Navigation</strong><small>GPS-guided autonomous</small></div>
+        <div class="arrow">→</div>
+        <div class="flow-box gold"><strong>Dual Sensor Payload</strong><small>Metal coil + thermal</small></div>
+        <div class="arrow">→</div>
+        <div class="flow-box teal"><strong>Sensor Fusion</strong><small>Cross-validation logic</small></div>
+        <div class="arrow">→</div>
+        <div class="flow-box red"><strong>Threat Decision</strong><small>Mine / No mine</small></div>
+        <div class="arrow">→</div>
+        <div class="flow-box teal"><strong>Geo-Tag + GCS</strong><small>GPS log &amp; RF alert</small></div>
+      </div>
+    </div>
+    <div class="reflection">
+      <div class="ref-header">Team Reflection</div>
+      <p>The dual-sensor fusion concept emerged directly from the literature: no single sensor is sufficient. Patel et al. (2019) proved that combining sensors improves results despite added complexity — we built on that rather than reinventing from scratch. Alternatives considered and rejected: GPR (too heavy and expensive for a small frame), chemical sniffers (too immature for reliable deployment), and visual-only cameras (ineffective for buried objects). The metal-thermal combination offered the best balance of cost, weight, and detection coverage for our scope and budget.</p>
+    </div>
+  </section>
+
+  <!-- METHODOLOGY -->
+  <section id="methodology" class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">06 · Methodology</div>
+      <h2>Our Conceptual Approach</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot">1</div>
+        <div class="tl-title">Problem Definition &amp; Requirements Analysis</div>
+        <div class="tl-desc">Define operational requirements, safety constraints, area coverage specifications, and detection accuracy targets before any component selection.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">2</div>
+        <div class="tl-title">Component Selection &amp; System Architecture</div>
+        <div class="tl-desc">Select the drone frame, ESP32 microcontroller, metal detector coil, thermal camera, GPS module, and RF communication module based on weight and power budgets.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">3</div>
+        <div class="tl-title">Autonomous Navigation Design</div>
+        <div class="tl-desc">Design the waypoint-based grid flight path algorithm and integrate GPS-guided navigation to ensure complete coverage of the target area.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">4</div>
+        <div class="tl-title">Sensor Integration &amp; Fusion Logic</div>
+        <div class="tl-desc">Mount sensors on the drone frame in parallel with developing the fusion algorithm that cross-validates metal and thermal signals to reduce false positives.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">5</div>
+        <div class="tl-title">Ground Control Station Development</div>
+        <div class="tl-desc">Build the GCS dashboard to receive real-time RF data, display GPS-tagged threat locations on a map, and log all detection events.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot">6</div>
+        <div class="tl-title">Testing, Validation &amp; Iteration</div>
+        <div class="tl-desc">Conduct controlled trials, analyse detection accuracy, identify failure modes, and iterate on fusion parameters and navigation coverage patterns.</div>
+      </div>
+    </div>
+    <div class="reflection">
+      <div class="ref-header">Team Reflection</div>
+      <p>Structuring the methodology was harder than anticipated. Our first draft was a vague sequence of "plan, build, test." Our Guide introduced a useful reframe: think in terms of dependencies — what must exist before the next step can begin? That question transformed a loose list into a structured pipeline. The biggest challenge was placing sensor fusion development correctly: our mentor clarified it should run in parallel with hardware integration, not after it, enabling iterative calibration. This was an insight we would not have reached independently.</p>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section id="tools" class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">07 · Tools &amp; Technologies</div>
+      <h2>The Building Blocks</h2>
+    </div>
+    <div class="tools-section">
+      <div class="tools-category">
+        <div class="tools-cat-label">Hardware Platform</div>
+        <div class="tags">
+          <span class="tag gold">Quadcopter Drone Frame</span>
+          <span class="tag gold">ESP32 Microcontroller</span>
+          <span class="tag gold">GPS Module</span>
+          <span class="tag gold">RF Communication Module</span>
+          <span class="tag gold">LiPo Battery System</span>
+          <span class="tag gold">Flight Controller</span>
+        </div>
+      </div>
+      <div class="tools-category">
+        <div class="tools-cat-label">Sensing Technologies</div>
+        <div class="tags">
+          <span class="tag teal">Metal Detector Coil (Inductive)</span>
+          <span class="tag teal">Thermal / IR Camera</span>
+          <span class="tag teal">Sensor Fusion Algorithm</span>
+        </div>
+      </div>
+      <div class="tools-category">
+        <div class="tools-cat-label">Software &amp; Development Environment</div>
+        <div class="tags">
+          <span class="tag">Embedded C / Arduino IDE</span>
+          <span class="tag">Python (Data Processing)</span>
+          <span class="tag">Mission Planner / MAVLink</span>
+          <span class="tag">Custom GCS Dashboard</span>
+          <span class="tag">Signal Processing Libraries</span>
+        </div>
+      </div>
+    </div>
+    <div class="reflection">
+      <div class="ref-header">Team Reflection</div>
+      <p>Before this project, most of the team's experience was limited to basic circuit design and laboratory exercises. Phase 1 began pushing us toward embedded systems programming (ESP32 and sensor interfacing), wireless communication protocols, and real-time data pipeline design. The challenge of cross-validating asynchronous signals from two physically different sensors introduced signal processing concepts not yet encountered in formal coursework — a productive and motivating stretch.</p>
+    </div>
+  </section>
+
+  <!-- OVERALL REFLECTION -->
+  <section id="reflection" class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">08 · Overall Reflection on Phase 1</div>
+      <h2>Looking Back at the Journey So Far</h2>
+    </div>
+    <div class="pcard">
+      <h3>Schedule &amp; Progress</h3>
+      <div class="checklist" style="margin-top: 8px;">
+        <div class="check-item"><div class="check-icon done">✓</div>Problem statement and project objectives finalised</div>
+        <div class="check-item"><div class="check-icon done">✓</div>Literature survey completed — 6 papers reviewed and analysed</div>
+        <div class="check-item"><div class="check-icon done">✓</div>Research gap identification completed</div>
+        <div class="check-item"><div class="check-icon done">✓</div>System design and methodology (flowchart) finalised</div>
+        <div class="check-item"><div class="check-icon done">✓</div>Components and modules selected (ESP32, sensors, GPS, RF)</div>
+        <div class="check-item"><div class="check-icon done">✓</div>Basic implementation planning completed</div>
+        <div class="check-item"><div class="check-icon pending">○</div>Initial hardware setup and testing — in progress for Phase 2</div>
+      </div>
+    </div>
+    <div class="pcard">
+      <h3>Continuous Evaluation Process</h3>
+      <p>The PRC review sessions were more valuable than anticipated. Each review prompted tighter thinking — moving from broad statements to precise, measurable claims. The feedback loop of <em>define → present → receive critique → refine</em> became our working rhythm for Phase 1, and it noticeably improved the quality and precision of every section of this portfolio.</p>
+    </div>
+    <div class="pcard">
+      <h3>Quality of Work</h3>
+      <p>We believe the depth of our literature survey is one of the stronger outputs of Phase 1 — six papers covering complementary approaches gave us a well-rounded view of the state of the art. System design and methodology are conceptually sound. The area requiring the most development heading into Phase 2 is the specificity of our sensor fusion approach: we have the concept, but not yet the algorithmic detail.</p>
+    </div>
+    <div class="reflection">
+      <div class="ref-header">Team Reflection</div>
+      <p>Phase 1 taught us that engineering problems are not purely technical — they are also problems of clarity and communication. Writing this e-portfolio, we discovered that sections we thought we understood fully became fuzzy when articulating them precisely. That discomfort was productive: it identified exactly where our understanding needed to deepen. As a team, our collaboration improved significantly once we divided section ownership while maintaining shared responsibility for coherence. The project feels genuinely real in a way that coursework assignments rarely do — and that sense of stakes is motivating as we move into Phase 2.</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-left">
+      <strong>MineGuard — Autonomous Aerial Landmine Detection System</strong>
+      Department of Electronics &amp; Communication Engineering · BITM Ballari (Autonomous, VTU)
+    </div>
+    <div class="footer-right">Project Phase 1 · E-Portfolio · 2026</div>
+  </footer>
+
+</main>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+    document.getElementById('prog').style.width = pct + '%';
+  });
+
+  const sections = document.querySelectorAll('section[id], .team-strip');
+  const navLinks = document.querySelectorAll('.nav-item');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        navLinks.forEach(a => {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.3, rootMargin: '-80px 0px -60% 0px' });
+  document.querySelectorAll('section[id]').forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
